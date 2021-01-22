@@ -148,7 +148,7 @@
                             @click="
                                 () => {
                                     $router.push({
-                                        path: `/personnel/teacher/edit/${row.id}`,
+                                        path: `/teacher/edit/${row.id}`,
                                     });
                                 }
                             "
@@ -219,8 +219,8 @@ export default {
             this.listQuery.pageIndex = pageIndex;
             const result = await getTeacherList(this.listQuery);
             if (result.code === 20000) {
-                const { items, total } = result.data;
-                this.list = items;
+                const { records, total } = result.data;
+                this.list = records;
                 this.total = total;
             }
             this.listLoading = false;

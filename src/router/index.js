@@ -113,6 +113,13 @@ export const constantRoutes = [
                 meta: { title: '课程添加', icon: 'el-icon-s-help' },
                 hidden: true
             },
+            {
+                path: 'edit/:id',
+                name: 'Edit',
+                component: () => import('@/views/course/saveOrEdit'),
+                meta: { title: '课程编辑', icon: 'el-icon-s-help' },
+                hidden: true
+            },
         ]
     },
 

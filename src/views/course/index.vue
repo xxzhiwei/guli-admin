@@ -2,63 +2,96 @@
     <div class="app-container">
         <el-card style="margin-bottom: 20px">
             <el-form :inline="true" class="x-el-form">
-                <el-form-item
-                    label="讲师名称"
-                    class="x-form-item-margin-bottom-0px"
-                >
-                    <el-input
-                        clearable
-                        size="small"
-                        v-model="listQuery.name"
-                        placeholder="请输入"
-                    ></el-input>
-                </el-form-item>
+                <el-row>
+                    <el-form-item
+                        label="课程名称"
+                        class="x-form-item-margin-bottom-0px"
+                    >
+                        <el-input
+                            clearable
+                            size="small"
+                            v-model="listQuery.title"
+                            placeholder="请输入"
+                        ></el-input>
+                    </el-form-item>
 
-                <el-form-item
-                    label="讲师头衔"
-                    class="x-form-item-margin-bottom-0px"
-                >
-                    <el-select
-                        size="small"
-                        clearable
-                        v-model="listQuery.level"
-                        placeholder="请选择"
-                    >
-                        <el-option :label="'高级讲师'" :value="1"></el-option>
-                        <el-option :label="'首席讲师'" :value="2"></el-option>
-                    </el-select>
-                </el-form-item>
+                    <el-form-item label="课程讲师">
+                        <el-select
+                            size="small"
+                            v-model="listQuery.teacherId"
+                            placeholder="请选择"
+                        >
+                            <el-option
+                                v-for="item in teachers"
+                                :key="item.value"
+                                :label="item.name"
+                                :value="item.id"
+                            />
+                        </el-select>
+                    </el-form-item>
+                    <el-form-item label="课程分类">
+                        <el-cascader
+                            size="small"
+                            v-model="subjectClassification"
+                            placeholder="请选择"
+                            :options="subjectTreeNodes"
+                            :props="cascaderProps"
+                            @change="subjectChange"
+                        ></el-cascader>
+                    </el-form-item>
+                    <el-form-item class="x-form-item-margin-bottom-0px">
+                        <el-button
+                            size="small"
+                            type="primary"
+                            @click="getList()"
+                            >查询</el-button
+                        >
+                    </el-form-item>
 
-                <el-form-item
-                    label="添加时间"
-                    class="x-form-item-margin-bottom-0px"
-                >
-                    <el-date-picker
-                        size="small"
-                        v-model="listQuery.begin"
-                        clearable
-                        type="date"
-                        format="yyyy-MM-dd"
-                        placeholder="开始日期"
-                    >
-                    </el-date-picker>
-                    <el-date-picker
-                        size="small"
-                        style="margin-left: 10px"
-                        v-model="listQuery.end"
-                        clearable
-                        type="date"
-                        format="yyyy-MM-dd"
-                        placeholder="截止日期"
-                    >
-                    </el-date-picker>
-                </el-form-item>
-
-                <el-form-item class="x-form-item-margin-bottom-0px">
-                    <el-button size="small" type="primary" @click="getList()"
-                        >查询</el-button
-                    >
-                </el-form-item>
+                    <el-row>
+                        <el-form-item
+                            label="添加时间"
+                            class="x-form-item-margin-bottom-0px"
+                        >
+                            <el-date-picker
+                                size="small"
+                                v-model="listQuery.begin"
+                                clearable
+                                type="date"
+                                format="yyyy-MM-dd"
+                                placeholder="开始日期"
+                                style="width: 194px"
+                            >
+                            </el-date-picker>
+                            <span style="margin: 0 10px">-</span>
+                            <el-date-picker
+                                size="small"
+                                v-model="listQuery.end"
+                                clearable
+                                type="date"
+                                format="yyyy-MM-dd"
+                                placeholder="截止日期"
+                                style="width: 194px"
+                            >
+                            </el-date-picker>
+                        </el-form-item>
+                        <el-form-item label="课程价格">
+                            <div style="display: flex">
+                                <el-input
+                                    size="small"
+                                    v-model="listQuery.minPrice"
+                                    placeholder="请输入"
+                                />
+                                <span style="margin: 0 10px">-</span>
+                                <el-input
+                                    size="small"
+                                    v-model="listQuery.maxPrice"
+                                    placeholder="请输入"
+                                />
+                            </div>
+                        </el-form-item>
+                    </el-row>
+                </el-row>
             </el-form>
         </el-card>
         <el-card>
@@ -101,46 +134,66 @@
                         }}
                     </template>
                 </el-table-column>
-                <el-table-column prop="name" label="姓名" width="110" />
-                <el-table-column label="头衔" width="110">
-                    <template slot-scope="{ row }">
-                        <span>{{ row.level | levelFilter }}</span>
-                    </template>
-                </el-table-column>
                 <el-table-column
-                    label="资历"
-                    prop="career"
-                    width="200"
+                    prop="title"
+                    label="名称"
+                    width="110"
                     show-overflow-tooltip
                 />
-                <el-table-column prop="intro" label="简介" width="auto">
-                    <template slot-scope="{ row }">
-                        <div
-                            style="
-                                overflow: hidden;
-                                text-overflow: ellipsis;
-                                white-space: nowrap;
-                            "
-                        >
-                            <el-popover
-                                placement="top-start"
-                                title="讲师简介"
-                                width="400"
-                                :content="row.intro"
-                                trigger="hover"
-                            >
-                                <span slot="reference">{{ row.intro }}</span>
-                            </el-popover>
-                        </div>
-                    </template>
-                </el-table-column>
+                <el-table-column
+                    label="分类"
+                    prop="subjectName"
+                    width="110"
+                    show-overflow-tooltip
+                />
+                <el-table-column
+                    label="子分类"
+                    prop="subjectParentName"
+                    width="110"
+                    show-overflow-tooltip
+                />
+                <el-table-column
+                    label="讲师"
+                    prop="teacherName"
+                    width="110"
+                    show-overflow-tooltip
+                />
+                <el-table-column
+                    label="封面"
+                    prop="cover"
+                    width="auto"
+                    show-overflow-tooltip
+                />
+
+                <el-table-column
+                    label="浏览数量"
+                    prop="viewCount"
+                    width="110"
+                    show-overflow-tooltip
+                />
+                <el-table-column
+                    label="价格"
+                    prop="price"
+                    width="110"
+                    show-overflow-tooltip
+                />
+                <el-table-column
+                    label="购买人数"
+                    prop="buyCount"
+                    width="110"
+                    show-overflow-tooltip
+                />
                 <el-table-column prop="gmtCreate" label="添加时间" width="110">
                     <template slot-scope="{ row }">
                         <span>{{ row.gmtCreate | dateFilter }}</span>
                     </template>
                 </el-table-column>
-                <el-table-column prop="sort" label="排序" width="110" />
-                <el-table-column fixed="right" label="操作" width="110">
+                <el-table-column
+                    fixed="right"
+                    align="center"
+                    label="操作"
+                    width="110"
+                >
                     <template slot-scope="{ row }">
                         <el-button
                             type="text"
@@ -148,7 +201,7 @@
                             @click="
                                 () => {
                                     $router.push({
-                                        path: `/personnel/teacher/edit/${row.id}`,
+                                        path: `/course/edit/${row.id}`,
                                     });
                                 }
                             "
@@ -180,18 +233,25 @@
 
 <script>
 import { getTeacherList, deleteTeacherById } from "../../api/teacher";
-// import {} from '../../api/'
+import { getCourses } from "../../api/course";
+import { courseMixin } from "./mixin";
+
 export default {
+    mixins: [courseMixin],
     data() {
         return {
             listLoading: false,
             listQuery: {
-                name: "",
-                level: "",
+                title: "",
                 begin: "",
                 end: "",
                 pageIndex: 1,
-                pageSize: 10,
+                pageSize: 5,
+                teacherId: "",
+                maxPrice: "",
+                minPrice: "",
+                subjectId: "",
+                subjectParentId: "",
             },
             list: [],
             total: 0,
@@ -214,22 +274,36 @@ export default {
     methods: {
         init() {
             this.getList();
+            this.getTeachers();
+            this.getSubjectTreeNodes();
         },
+
+        // 监听课程分类
+        subjectChange(v) {
+            if (v && v.length) {
+                const [subjectParentId, subjectId] = v;
+                this.listQuery.subjectId = subjectId;
+                this.listQuery.subjectParentId = subjectParentId;
+            }
+        },
+
         async getList(pageIndex = 1) {
             this.listLoading = true;
             this.listQuery.pageIndex = pageIndex;
-            const result = await getTeacherList(this.listQuery);
+            const result = await getCourses(this.listQuery);
             if (result.code === 20000) {
-                const { items, total } = result.data;
-                this.list = items;
+                const { records, total } = result.data;
+                this.list = records;
                 this.total = total;
             }
             this.listLoading = false;
         },
+
         sizeChange(size) {
             this.listQuery.pageSize = size;
             this.getList();
         },
+
         deleteById(id) {
             this.$confirm("确认删除该记录, 是否继续?", "提示", {
                 confirmButtonText: "确定",
@@ -237,10 +311,10 @@ export default {
                 type: "warning",
             })
                 .then(async () => {
-                    const result = await deleteTeacherById(id)
+                    const result = await deleteTeacherById(id);
                     if (result.code === 20000) {
-                        this.$message.success('操作成功')
-                        this.getList()
+                        this.$message.success("操作成功");
+                        this.getList();
                     }
                 })
                 .catch(() => {
