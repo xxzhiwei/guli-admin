@@ -41,7 +41,9 @@
                             style="width: 100px; height: 100px; border-radius: 50%; box-shadow: 0 0 5px #ccc;"
                             :src="formData.avatar"
                             fit="cover"></el-image>
-                        <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+                        <div v-else style="width: 100px; height: 100px; box-shadow: 0 0 5px #ccc;" class="d-f f-ai-c f-jc-c">
+                            <i class="el-icon-plus avatar-uploader-icon"></i>
+                        </div>
                         <div class="el-upload__text"><em>点击上传/更换</em></div>
                     </el-upload>
                 </el-form-item>

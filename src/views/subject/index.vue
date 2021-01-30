@@ -94,8 +94,8 @@ export default {
             this.listLoading = true;
             const result = await getSubjectTreeNodes();
             if (result.code === 20000) {
-                const { items } = result.data;
-                this.list = items;
+                const { records } = result.data;
+                this.list = records;
             }
             this.listLoading = false;
         },

@@ -9,3 +9,13 @@ export function uploadVideo(params) {
         baseURL: 'http://localhost:8800'
     })
 }
+
+// 删除视频
+export function deleteVideosByIds(params) {
+    return request({
+        url: `/vod/videos`,
+        method: 'delete',
+        data: params,
+        baseURL: 'http://localhost:8800'
+    })
+}

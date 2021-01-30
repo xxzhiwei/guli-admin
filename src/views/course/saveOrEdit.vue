@@ -20,7 +20,7 @@
                     >
                         <el-option
                             v-for="item in teachers"
-                            :key="item.value"
+                            :key="item.id"
                             :label="item.name"
                             :value="item.id"
                         />
@@ -114,9 +114,23 @@
                             <div>
                                 {{ item.title }}
                                 <div class="acts">
-                                    <span style="color: #409EFF;" @click="showChapterPartDialog({ chapter: item })">添加小节</span>
-                                    <span style="color: #409EFF;" @click="showChapterDialog(item)">编辑</span>
-                                    <span style="color: #F56C6C;" @click="deleteChapterById(item.id)"
+                                    <span
+                                        style="color: #409eff"
+                                        @click="
+                                            showChapterPartDialog({
+                                                chapter: item,
+                                            })
+                                        "
+                                        >添加小节</span
+                                    >
+                                    <span
+                                        style="color: #409eff"
+                                        @click="showChapterDialog(item)"
+                                        >编辑</span
+                                    >
+                                    <span
+                                        style="color: #f56c6c"
+                                        @click="deleteChapterById(item.id)"
                                         >删除</span
                                     >
                                 </div>
@@ -129,8 +143,22 @@
                                     <div>
                                         {{ chapterPart.title }}
                                         <div class="acts">
-                                            <span style="color: #409EFF;" @click="showChapterPartDialog({ chapterPart })">编辑</span>
-                                            <span style="color: #F56C6C;" @click="deleteChapterPartById(chapterPart.id)"
+                                            <span
+                                                style="color: #409eff"
+                                                @click="
+                                                    showChapterPartDialog({
+                                                        chapterPart,
+                                                    })
+                                                "
+                                                >编辑</span
+                                            >
+                                            <span
+                                                style="color: #f56c6c"
+                                                @click="
+                                                    deleteChapterPartById(
+                                                        chapterPart.id
+                                                    )
+                                                "
                                                 >删除</span
                                             >
                                         </div>
@@ -142,7 +170,46 @@
                 </el-form-item>
             </template>
             <template v-if="active === 3">
-                <div>3</div>
+                <div style="margin-bottom: 40px;">
+                    <el-link>
+                        <i class="el-icon-edit" style="font-size: 20px;"></i>
+                        <span style="font-size: 20px;">课程信息</span>
+                    </el-link>
+                </div>
+                <el-row>
+                    <el-col :span="4">
+                        <div class="block">
+                            <el-image :src="formData.cover"></el-image>
+                        </div>
+                    </el-col>
+                    <el-col :span="20">
+                        <div>
+                            <div>课程名称：{{formData.title}}</div>
+                            <div>课程讲师：{{teacherName}}</div>
+                            <div>课程分类：{{subjectClassificationName}}</div>
+                            <div>课程价格：{{`${formData.price ? '￥' : ''}${formData.price}`}}</div>
+                            <div>课程课时：{{formData.lessonNum}}</div>
+                            <div>课程描述：{{formData.description}}</div>
+                            <div>
+                                课程章节：
+                                <ul>
+                                    <li
+                                        v-for="item of chapters"
+                                        :key="item.id + '-show'"
+                                    >
+                                        <div>{{ item.title }}</div>
+                                        <ul>
+                                            <li
+                                                v-for="chapterPart of item.children"
+                                                :key="chapterPart.id + '-show'"
+                                            ></li>
+                                        </ul>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </el-col>
+                </el-row>
             </template>
             <el-form-item>
                 <el-button size="small" type="primary" @click="prevStep"
@@ -155,8 +222,12 @@
                     v-if="active !== 3"
                     >下一步</el-button
                 >
-                <el-button size="small" type="primary" @click="updateCourse" v-else
-                    >保存</el-button
+                <el-button
+                    size="small"
+                    type="primary"
+                    @click="updateCourse"
+                    v-else
+                    >保 存</el-button
                 >
             </el-form-item>
         </el-form>
@@ -171,7 +242,11 @@
                     <el-input size="small" v-model="chapterFormData.title" />
                 </el-form-item>
                 <el-form-item label="排序">
-                    <el-input-number size="small" :min="0" v-model="chapterFormData.sort" />
+                    <el-input-number
+                        size="small"
+                        :min="0"
+                        v-model="chapterFormData.sort"
+                    />
                 </el-form-item>
             </el-form>
             <div slot="footer" class="dialog-footer">
@@ -191,16 +266,25 @@
         >
             <el-form :model="chapterPartFormData" label-width="80px">
                 <el-form-item label="标题">
-                    <el-input size="small" v-model="chapterPartFormData.title" />
+                    <el-input
+                        size="small"
+                        v-model="chapterPartFormData.title"
+                    />
                 </el-form-item>
                 <el-form-item label="排序">
-                    <el-input-number size="small" :min="0" v-model="chapterPartFormData.sort" />
+                    <el-input-number
+                        size="small"
+                        :min="0"
+                        v-model="chapterPartFormData.sort"
+                    />
                 </el-form-item>
                 <el-form-item label="是否免费">
-                    <el-switch size="small"
+                    <el-switch
+                        size="small"
                         v-model="chapterPartFormData.isFree"
                         :active-value="1"
-                        :inactive-value="0">
+                        :inactive-value="0"
+                    >
                     </el-switch>
                 </el-form-item>
                 <el-form-item label="上传视频">
@@ -209,10 +293,14 @@
                         action="#"
                         :http-request="uploadVideo"
                         :on-exceed="handleUploadExceed"
+                        :before-remove="beforeRemove"
                         :limit="2"
                         :on-remove="onRemove"
-                        :file-list="fileList">
-                        <el-button size="small" type="primary">点击上传</el-button>
+                        :file-list="fileList"
+                    >
+                        <el-button size="small" type="primary"
+                            >点击上传</el-button
+                        >
                     </el-upload>
                 </el-form-item>
             </el-form>
@@ -220,7 +308,10 @@
                 <el-button @click="isShowChapterPartDialog = false" size="small"
                     >取 消</el-button
                 >
-                <el-button type="primary" @click="onChapterPartSubmit" size="small"
+                <el-button
+                    type="primary"
+                    @click="onChapterPartSubmit"
+                    size="small"
                     >确 定</el-button
                 >
             </div>
@@ -229,321 +320,356 @@
 </template>
 
 <script>
-import { 
+import {
     addCourse,
-    updateCourseInfo, getCourseInfoById
-} from '../../api/course'
+    updateCourseInfo,
+    getCourseInfoById,
+} from "../../api/course";
 
-import { uploadVideo } from '../../api/video'
-import { 
-    getChaptersByCourseId, deleteChapterById, addChapter, updateChapter,
-    updateChapterPart, addChapterPart, deleteChapterPartById
-} from '../../api/chapter'
-import { courseMixin } from './mixin'
+import { uploadVideo, deleteVideosByIds } from "../../api/video";
+import {
+    getChaptersByCourseId,
+    deleteChapterById,
+    addChapter,
+    updateChapter,
+    updateChapterPart,
+    addChapterPart,
+    deleteChapterPartById,
+} from "../../api/chapter";
+import { courseMixin } from "./mixin";
 
-import { getTeachersAll } from '../../api/teacher'
-import { getSubjectTreeNodes } from '../../api/subject'
-import { uploadFile } from '../../api/oss'
-import Tinymce from '../../components/Tinymce'
+// import { getTeachersAll } from "../../api/teacher";
+// import { getSubjectTreeNodes } from "../../api/subject";
+import { uploadFile } from "../../api/oss";
+import Tinymce from "../../components/Tinymce";
 
 const defaultCourseFormData = {
-    id: '',
-    teacherId: '',
-    subjectId: '',
-    subjectParentId: '',
-    title: '',
-    price: '',
-    lessonNum: '',
-    cover: '',
-    description: ''
-}
+    id: "",
+    teacherId: "1189389726308478977",
+    subjectId: "1178585108454121473",
+    subjectParentId: "1178214681181483010",
+    title: "测试课程",
+    price: "12",
+    lessonNum: "12",
+    cover: "https://guli-shixin.oss-cn-guangzhou.aliyuncs.com/0253b972f45907eaf2275c97328a6d21.jpg",
+    description: ""
+};
 
 const defaultChapterFormData = {
-    id: '',
-    title: '',
+    id: "",
+    title: "",
     sort: 0,
-    courseId: ''
-}
+    courseId: "",
+};
 
 const defaultChapterPartFormData = {
-    id: '',
-    title: '',
+    id: "",
+    title: "",
     sort: 0,
-    courseId: '',
-    chapterId: '',
+    courseId: "",
+    chapterId: "",
     isFree: 0,
-    videoOriginalName: '',
-    videoSourceId: ''
-}
+    videoOriginalName: "",
+    videoSourceId: "",
+};
 
 export default {
     mixins: [courseMixin],
     components: {
-        Tinymce
+        Tinymce,
     },
     data() {
         return {
             formData: {
-                ...defaultCourseFormData
+                ...defaultCourseFormData,
             },
             chapterFormData: {
-                ...defaultChapterFormData
+                ...defaultChapterFormData,
             },
             chapterPartFormData: {
-                ...defaultChapterPartFormData
+                ...defaultChapterPartFormData,
             },
             subjectClassification: [],
             subjectTreeNodes: [],
             teachers: [],
             cascaderProps: {
                 value: "id",
-                label: "title"
+                label: "title",
             },
-            active: 1,
+            active: 3,
             chapters: [],
             isShowChapterDialog: false,
             isShowChapterPartDialog: false,
             fileList: [],
-        }
+        };
+    },
+    computed: {
+        // 讲师名称
+        teacherName() {
+            const teacher = this.teachers.find(item => item.id === this.formData.teacherId)
+            if (teacher) {
+                return teacher.name
+            }
+            return ''
+        },
+
+        // 课程分类名称
+        subjectClassificationName() {
+            if (this.formData.subjectId) {
+                if (this.subjectTreeNodes.length) {
+                    const subjectParent = this.subjectTreeNodes.find(item => item.id === this.formData.subjectParentId)
+                    const subject = subjectParent.children.find(item => item.id === this.formData.subjectId)
+                    return `${subjectParent.title} / ${subject.title}`
+                }
+                else {
+                    return ''
+                }
+            }
+            return ''
+        },
     },
     created() {
-        this.init()
+        this.init();
     },
     methods: {
+        beforeRemove(file) {
+            return this.$confirm(`确定删除 ${file.name}？`);
+        },
+
         //上传视频成功调用的方法
-        onRemove(file, fileList) {
-            //上传视频id赋值
-            // this.video.videoSourceId = response.data.videoId
-            // //上传视频名称赋值
-            // this.video.videoOriginalName = file.name
-            console.log(file, fileList);
+        onRemove() {
+            this.deleteVideosByIds();
         },
         init() {
-            const { id } = this.$route.params
-            this.getSubjectTreeNodes()
-            this.getTeachers()
+            const { id } = this.$route.params;
+            this.getSubjectTreeNodes();
+            this.getTeachers();
             if (id) {
-                this.getChaptersByCourseId(id)
-                this.getCourseInfoById(id)
+                this.getChaptersByCourseId(id);
+                this.getCourseInfoById(id);
             }
-            this.formData.id = id
+            this.formData.id = id;
         },
-        
+
         // 上传课程封面
         async uploadFile({ file }) {
             const formData = new FormData();
             // 「file」对应后端接收字段名字
-            formData.append('file', file)
-            const result = await uploadFile(formData)
+            formData.append("file", file);
+            const result = await uploadFile(formData);
             if (result.code === 20000) {
-                this.formData.cover = result.data.url
-                this.$message.success('上传成功')
+                this.formData.cover = result.data.url;
+                this.$message.success("上传成功");
             }
         },
 
         // 监听课程分类
         subjectChange(v) {
             if (v && v.length) {
-                const [subjectParentId, subjectId] = v
-                this.formData.subjectId = subjectId
-                this.formData.subjectParentId = subjectParentId
+                const [subjectParentId, subjectId] = v;
+                this.formData.subjectId = subjectId;
+                this.formData.subjectParentId = subjectParentId;
             }
         },
 
         // 更新课程
         async updateCourse(courseInfo) {
-            const result = await updateCourseInfo(courseInfo)
+            const result = await updateCourseInfo(courseInfo);
             if (result.code !== 20000) {
-                this.$message.error('更新课程信息失败')
+                this.$message.error("更新课程信息失败");
             }
         },
 
         // 更新章节
         async updateChapter(chapter) {
-            const result = await updateChapter(chapter)
+            const result = await updateChapter(chapter);
             if (result.code === 20000) {
-                this.$message.success('更新成功')
-                this.getChaptersByCourseId(this.formData.id)
+                this.$message.success("更新成功");
+                this.getChaptersByCourseId(this.formData.id);
             }
         },
 
         // 更新小节
         async updateChapterPart(chapter) {
-            const result = await updateChapterPart(chapter)
+            const result = await updateChapterPart(chapter);
             if (result.code === 20000) {
-                this.$message.success('更新成功')
-                this.getChaptersByCourseId(this.formData.id)
+                this.$message.success("更新成功");
+                this.getChaptersByCourseId(this.formData.id);
             }
         },
 
         // 课程提交
         onCourseSubmit() {
             if (this.formData.id) {
-                this.updateCourse(this.formData)
-            }
-            else {
-                this.addCourse(this.formData)
+                this.updateCourse(this.formData);
+            } else {
+                this.addCourse(this.formData);
             }
         },
 
         // 章节提交（通过模态框添加或编辑的(下同)
         onChapterSubmit() {
             if (this.chapterFormData.id) {
-                this.updateChapter(this.chapterFormData)
-            }
-            else {
-                this.addChapter(this.chapterFormData)
+                this.updateChapter(this.chapterFormData);
+            } else {
+                this.addChapter(this.chapterFormData);
             }
             this.$nextTick(() => {
-                this.isShowChapterDialog = false
-            })
+                this.isShowChapterDialog = false;
+            });
         },
 
         // 小节提交
         onChapterPartSubmit() {
             if (this.chapterPartFormData.id) {
-                this.updateChapterPart(this.chapterPartFormData)
-            }
-            else {
-                this.addChapterPart(this.chapterPartFormData)
+                this.updateChapterPart(this.chapterPartFormData);
+            } else {
+                this.addChapterPart(this.chapterPartFormData);
             }
             this.$nextTick(() => {
-                this.isShowChapterPartDialog = false
-            })
+                this.isShowChapterPartDialog = false;
+            });
         },
 
         // 上一步
         prevStep() {
             if (this.active > 1) {
-                this.active--
+                this.active--;
             }
         },
 
         // 下一步：无id执行添加，否则执行更新
         nextStep() {
             if (this.active < 3) {
-                this.active++
-                this.onCourseSubmit()
+                this.active++;
+                // this.onCourseSubmit()
             }
         },
 
         // 添加课程
         async addCourse(courseInfo) {
-            const result = await addCourse(courseInfo)
+            const result = await addCourse(courseInfo);
             if (result.code === 20000) {
-                this.formData.id = result.data.id
-                this.$message.success('添加课程成功')
+                this.formData.id = result.data.id;
+                this.$message.success("添加课程成功");
             }
         },
 
         // 添加课程章节
         async addChapter() {
-            const result = await addChapter(this.chapterFormData)
+            const result = await addChapter(this.chapterFormData);
             if (result.code === 20000) {
-                this.$message.success('添加成功')
-                this.getChaptersByCourseId(this.formData.id)
-                this.isShowChapterDialog = false
+                this.$message.success("添加成功");
+                this.getChaptersByCourseId(this.formData.id);
+                this.isShowChapterDialog = false;
             }
         },
 
         // 添加小节
         async addChapterPart() {
-            const result = await addChapterPart(this.chapterPartFormData)
+            const result = await addChapterPart(this.chapterPartFormData);
             if (result.code === 20000) {
-                this.$message.success('添加成功')
-                this.getChaptersByCourseId(this.formData.id)
-                this.isShowChapterPartDialog = false
+                this.$message.success("添加成功");
+                this.getChaptersByCourseId(this.formData.id);
+                this.isShowChapterPartDialog = false;
             }
         },
 
         // 显示添加章节模态框
         showChapterDialog(chapter) {
-            this.isShowChapterDialog = true
+            this.isShowChapterDialog = true;
             if (chapter) {
                 this.chapterFormData = {
-                    ...chapter
-                }
-            }
-            else {
+                    ...chapter,
+                };
+            } else {
                 this.chapterFormData = {
                     ...defaultChapterFormData,
-                    courseId: this.formData.id
-                }
+                    courseId: this.formData.id,
+                };
             }
         },
 
         // 显示添加小节模态框
         showChapterPartDialog({ chapter, chapterPart }) {
-            this.isShowChapterPartDialog = true
-            this.fileList = []
+            this.isShowChapterPartDialog = true;
+            this.fileList = [];
             if (chapter) {
                 this.chapterPartFormData = {
                     ...defaultChapterPartFormData,
                     courseId: this.formData.id,
-                    chapterId: chapter.id
-                }
-            }
-            else if (chapterPart) {
+                    chapterId: chapter.id,
+                };
+            } else if (chapterPart) {
                 this.chapterPartFormData = {
-                    ...chapterPart
-                }
+                    ...chapterPart,
+                };
                 if (chapterPart.videoSourceId) {
                     this.fileList.push({
                         name: chapterPart.videoOriginalName,
-                        videoSourceId: chapterPart.videoSourceId
-                    })
+                        videoSourceId: chapterPart.videoSourceId,
+                    });
                 }
             }
-            console.log(this.chapterPartFormData);
         },
 
         // 删除章节（有小节的情况下不可删除
         deleteChapterById(chapterId) {
-            if (this.chapters.find(item => item.id === chapterId).children.length) {
-                return this.$message.error('该章节存在视频，不可执行删除操作')
+            if (
+                this.chapters.find((item) => item.id === chapterId).children
+                    .length
+            ) {
+                return this.$message.error("该章节存在视频，不可执行删除操作");
             }
-            this.$confirm('即将执行删除操作，是否继续?', '提示', {
-                confirmButtonText: '确定',
-                cancelButtonText: '取消',
-                type: 'warning'
-            }).then(async () => {
-                const result = await deleteChapterById(chapterId)
-                if (result.code === 20000) {
-                    this.$message.success('删除成功')
-                    this.getChaptersByCourseId(this.formData.id)
-                }
-            }).catch(() => {});
+            this.$confirm("即将执行删除操作，是否继续?", "提示", {
+                confirmButtonText: "确定",
+                cancelButtonText: "取消",
+                type: "warning",
+            })
+                .then(async () => {
+                    const result = await deleteChapterById(chapterId);
+                    if (result.code === 20000) {
+                        this.$message.success("删除成功");
+                        this.getChaptersByCourseId(this.formData.id);
+                    }
+                })
+                .catch(() => {});
         },
 
         // 删除小节(ps：小节就是视频)
         deleteChapterPartById(id) {
-            this.$confirm('即将执行删除操作，是否继续?', '提示', {
-                confirmButtonText: '确定',
-                cancelButtonText: '取消',
-                type: 'warning'
-            }).then(async () => {
-                const result = await deleteChapterPartById(id)
-                if (result.code === 20000) {
-                    this.$message.success('删除成功')
-                    this.getChaptersByCourseId(this.formData.id)
-                }
-            }).catch(() => {});
+            this.$confirm("即将执行删除操作，是否继续?", "提示", {
+                confirmButtonText: "确定",
+                cancelButtonText: "取消",
+                type: "warning",
+            })
+                .then(async () => {
+                    const result = await deleteChapterPartById(id);
+                    if (result.code === 20000) {
+                        this.$message.success("删除成功");
+                        this.getChaptersByCourseId(this.formData.id);
+                    }
+                })
+                .catch(() => {});
         },
 
         // 获取课程章节
         async getChaptersByCourseId(courseId) {
-            const result = await getChaptersByCourseId(courseId)
+            const result = await getChaptersByCourseId(courseId);
             if (result.code === 20000) {
-                this.chapters = result.data.records
+                this.chapters = result.data.records;
             }
         },
 
         // 获取课程信息
         async getCourseInfoById(id) {
-            const result = await getCourseInfoById(id)
+            const result = await getCourseInfoById(id);
             if (result.code === 20000) {
-                this.formData = result.data.record
-                this.subjectClassification = [this.formData.subjectParentId, this.formData.subjectId]
+                this.formData = result.data.record;
+                this.subjectClassification = [
+                    this.formData.subjectParentId,
+                    this.formData.subjectId,
+                ];
             }
         },
 
@@ -551,20 +677,37 @@ export default {
         async uploadVideo({ file }) {
             const formData = new FormData();
             // 「file」对应后端接收字段名字
-            formData.append('file', file)
-            const result = await uploadVideo(formData)
+            formData.append("file", file);
+            const result = await uploadVideo(formData);
             if (result.code === 20000) {
-                this.chapterPartFormData.videoSourceId = result.data.videoId
-                this.chapterPartFormData.videoOriginalName = file.name
-                this.$message.success('上传成功')
+                this.chapterPartFormData.videoSourceId = result.data.videoId;
+                this.chapterPartFormData.videoOriginalName = file.name;
+                this.$message.success("上传成功");
             }
         },
 
+        // 上传视频提示错误
         handleUploadExceed() {
-            this.$message.warning("每个小节只能有一个视频，请先删除上传的视频在操作")
-        }
-    }
-}
+            this.$message.warning(
+                "每个小节只能有一个视频，请先删除上传的视频在操作"
+            );
+        },
+
+        // 删除视频(每个小节只有一个视频)
+        async deleteVideosByIds() {
+            const params = {
+                ids: [this.chapterPartFormData.videoSourceId],
+            };
+            const result = await deleteVideosByIds(params);
+            if (result.code === 20000) {
+                this.$message.success("删除成功");
+                this.chapterPartFormData.videoSourceId = "";
+                this.chapterPartFormData.videoOriginalName = "";
+                this.getChaptersByCourseId(this.formData.id);
+            }
+        },
+    },
+};
 </script>
 
 <style lang="scss" scoped>

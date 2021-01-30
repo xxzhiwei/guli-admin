@@ -4,7 +4,7 @@ import request from '@/utils/request'
  * 获取讲师列表
  * @param {*} params 
  */
-export function getTeacherList(params) {
+export function getTeachers(params) {
     return request({
         url: '/edu/teachers',
         method: 'get',
@@ -17,13 +17,13 @@ export function getTeacherList(params) {
  * 获取全部讲师列表
  * @param {*} params 
  */
-export function getTeachersAll() {
-    return request({
-        url: '/edu/teachers/all',
-        method: 'get',
-        baseURL: 'http://localhost:8800'
-    })
-}
+// export function getTeachersAll() {
+//     return request({
+//         url: '/edu/teachers/all',
+//         method: 'get',
+//         baseURL: 'http://localhost:8800'
+//     })
+// }
 
 /**
  * 获取讲师信息

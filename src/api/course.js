@@ -38,3 +38,12 @@ export function updateCourseInfo(params) {
         baseURL: 'http://localhost:8800'
     })
 }
+
+// 删除课程（包括小节&视频
+export function deleteCourseById(id) {
+    return request({
+        url: `/edu/courses/${id}`,
+        method: 'delete',
+        baseURL: 'http://localhost:8800'
+    })
+}

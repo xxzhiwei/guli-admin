@@ -1,5 +1,5 @@
 <template>
-    <div class="app-container">
+    <div class="app-container course">
         <el-card style="margin-bottom: 20px">
             <el-form :inline="true" class="x-el-form">
                 <el-row>
@@ -58,7 +58,7 @@
                                 v-model="listQuery.begin"
                                 clearable
                                 type="date"
-                                format="yyyy-MM-dd"
+                                value-format="yyyy-MM-dd"
                                 placeholder="开始日期"
                                 style="width: 194px"
                             >
@@ -69,7 +69,7 @@
                                 v-model="listQuery.end"
                                 clearable
                                 type="date"
-                                format="yyyy-MM-dd"
+                                value-format="yyyy-MM-dd"
                                 placeholder="截止日期"
                                 style="width: 194px"
                             >
@@ -128,7 +128,7 @@
                     <template slot-scope="{ $index }">
                         <!-- 用分页反推 -->
                         {{
-                            (listQuery.pageIndex - 1) * listQuery.pageSize +
+                            (listQuery.current - 1) * listQuery.size +
                             $index +
                             1
                         }}
@@ -188,13 +188,20 @@
                         <span>{{ row.gmtCreate | dateFilter }}</span>
                     </template>
                 </el-table-column>
+                <el-table-column label="状态" width="110">
+                    <template slot-scope="{ row }">
+                        <span :class="isPublished(row.status) ? 'c-success' : ''">{{ row.status | statusFilter }}</span>
+                    </template>
+                </el-table-column>
                 <el-table-column
                     fixed="right"
                     align="center"
                     label="操作"
-                    width="110"
+                    width="140"
                 >
                     <template slot-scope="{ row }">
+                        <el-button v-if="isPublished(row.status)" type="text" size="small" @click="putOffShelves(row)">下架</el-button>
+                        <el-button v-else type="text" size="small" @click="putOnShelves(row)">上架</el-button>
                         <el-button
                             type="text"
                             size="small"
@@ -218,8 +225,8 @@
                 </el-table-column>
             </el-table>
             <el-pagination
-                :page-size="listQuery.pageSize"
-                :current-page="listQuery.pageIndex"
+                :page-size="listQuery.size"
+                :current-page="listQuery.current"
                 style="text-align: right; padding: 20px 0"
                 layout="total, sizes, prev, pager, next"
                 :page-sizes="[5, 10, 20, 40]"
@@ -232,8 +239,7 @@
 </template>
 
 <script>
-import { getTeacherList, deleteTeacherById } from "../../api/teacher";
-import { getCourses } from "../../api/course";
+import { getCourses, updateCourseInfo, deleteCourseById } from "../../api/course";
 import { courseMixin } from "./mixin";
 
 export default {
@@ -245,8 +251,8 @@ export default {
                 title: "",
                 begin: "",
                 end: "",
-                pageIndex: 1,
-                pageSize: 5,
+                current: 1,
+                size: 10,
                 teacherId: "",
                 maxPrice: "",
                 minPrice: "",
@@ -267,6 +273,12 @@ export default {
         dateFilter(dateStr) {
             return dateStr.replace(/(\d{4}-\d{2}-\d{2}).*/, "$1");
         },
+        statusFilter(status) {
+            return {
+                'Draft': '未发布',
+                'Normal': '已发布'
+            }[status]
+        }
     },
     created() {
         this.init();
@@ -287,9 +299,9 @@ export default {
             }
         },
 
-        async getList(pageIndex = 1) {
+        async getList(current = 1) {
             this.listLoading = true;
-            this.listQuery.pageIndex = pageIndex;
+            this.listQuery.current = current;
             const result = await getCourses(this.listQuery);
             if (result.code === 20000) {
                 const { records, total } = result.data;
@@ -300,30 +312,82 @@ export default {
         },
 
         sizeChange(size) {
-            this.listQuery.pageSize = size;
+            this.listQuery.size = size;
             this.getList();
         },
 
         deleteById(id) {
-            this.$confirm("确认删除该记录, 是否继续?", "提示", {
+            this.$confirm("确认删除该记录，是否继续？", "提示", {
                 confirmButtonText: "确定",
                 cancelButtonText: "取消",
                 type: "warning",
             })
                 .then(async () => {
-                    const result = await deleteTeacherById(id);
+                    const result = await deleteCourseById(id);
                     if (result.code === 20000) {
                         this.$message.success("操作成功");
                         this.getList();
                     }
+                    else {
+                        this.$message.error("操作失败");
+                    }
                 })
-                .catch(() => {
-                    // this.$message({
-                    //     type: "info",
-                    //     message: "已取消删除",
-                    // });
-                });
+                .catch(() => {});
         },
+
+        isPublished(status) {
+            return status === 'Normal'
+        },
+
+        // 上架课程
+        putOnShelves(row) {
+            this.$confirm("确认上架该视频，是否继续？", "提示", {
+                confirmButtonText: "确定",
+                cancelButtonText: "取消",
+                type: "info",
+            })
+                .then(async () => {
+                     const params = {
+                        ...row,
+                        status: 'Normal'
+                    }
+                    const result = await this.updateCourseInfo(params);
+                    if (result.code === 20000) {
+                        this.$message.success("上架成功");
+                        this.getList();
+                    }
+                })
+                .catch(() => {});
+        },
+
+        // 下架课程
+        putOffShelves(row) {
+            this.$confirm("确认下架该视频，是否继续？", "提示", {
+                confirmButtonText: "确定",
+                cancelButtonText: "取消",
+                type: "warning",
+            })
+                .then(async () => {
+                    const params = {
+                        ...row,
+                        status: 'Draft'
+                    }
+                    const result = await this.updateCourseInfo(params);
+                    if (result.code === 20000) {
+                        this.$message.success("下架成功");
+                        this.getList();
+                    }
+                })
+                .catch(() => {});
+        },
+
+        // 更新课程信息
+        async updateCourseInfo(params) {
+            return await updateCourseInfo(params)
+        }
     },
 };
 </script>
+
+<style lang="scss" scoped>
+</style>

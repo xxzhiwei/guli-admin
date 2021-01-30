@@ -1,4 +1,4 @@
-import { getTeachersAll } from '../../api/teacher'
+import { getTeachers } from '../../api/teacher'
 import { getSubjectTreeNodes } from '../../api/subject'
 
 export const courseMixin = {
@@ -40,7 +40,7 @@ export const courseMixin = {
 
         // 获取讲师
         async getTeachers() {
-            const result = await getTeachersAll()
+            const result = await getTeachers({ all: '1' })
             if (result.code === 20000) {
                 this.teachers = result.data.records
             }
