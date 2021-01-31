@@ -6,7 +6,7 @@ import request from '@/utils/request'
  */
 export function getTeachers(params) {
     return request({
-        url: '/edu/teachers',
+        url: '/cms/admin/teachers',
         method: 'get',
         params,
         baseURL: 'http://localhost:8800'
@@ -19,7 +19,7 @@ export function getTeachers(params) {
  */
 // export function getTeachersAll() {
 //     return request({
-//         url: '/edu/teachers/all',
+//         url: '/cms/admin/teachers/all',
 //         method: 'get',
 //         baseURL: 'http://localhost:8800'
 //     })
@@ -31,7 +31,7 @@ export function getTeachers(params) {
  */
 export function getTeacherById(id) {
     return request({
-        url: `/edu/teachers/${id}`,
+        url: `/cms/admin/teachers/${id}`,
         method: 'get',
         baseURL: 'http://localhost:8800'
     })
@@ -43,7 +43,7 @@ export function getTeacherById(id) {
  */
 export function saveTeacher(params) {
     return request({
-        url: `/edu/teachers`,
+        url: `/cms/admin/teachers`,
         method: 'post',
         baseURL: 'http://localhost:8800',
         data: params
@@ -56,7 +56,7 @@ export function saveTeacher(params) {
  */
 export function updateTeacher(params) {
     return request({
-        url: `/edu/teachers/${params.id}`,
+        url: `/cms/admin/teachers/${params.id}`,
         method: 'put',
         baseURL: 'http://localhost:8800',
         data: params
@@ -69,7 +69,7 @@ export function updateTeacher(params) {
  */
 export function deleteTeacherById(id) {
     return request({
-        url: `/edu/teachers/${id}`,
+        url: `/cms/admin/teachers/${id}`,
         method: 'delete',
         baseURL: 'http://localhost:8800'
     })

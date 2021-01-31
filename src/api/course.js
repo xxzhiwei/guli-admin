@@ -3,7 +3,7 @@ import request from '@/utils/request'
 // 获取课程列表
 export function getCourses(params) {
     return request({
-        url: `/edu/courses/`,
+        url: `/cms/admin/courses/`,
         method: 'get',
         params,
         baseURL: 'http://localhost:8800'
@@ -13,7 +13,7 @@ export function getCourses(params) {
 // 获取课程信息
 export function getCourseInfoById(id) {
     return request({
-        url: `/edu/courses/${id}`,
+        url: `/cms/admin/courses/${id}`,
         method: 'get',
         baseURL: 'http://localhost:8800'
     })
@@ -22,7 +22,7 @@ export function getCourseInfoById(id) {
 // 添加课程
 export function addCourse(params) {
     return request({
-        url: '/edu/courses/',
+        url: '/cms/admin/courses/',
         method: 'post',
         data: params,
         baseURL: 'http://localhost:8800'
@@ -32,7 +32,7 @@ export function addCourse(params) {
 // 更新课程（基本信息）
 export function updateCourseInfo(params) {
     return request({
-        url: `/edu/courses/${params.id}`,
+        url: `/cms/admin/courses/${params.id}`,
         method: 'put',
         data: params,
         baseURL: 'http://localhost:8800'
@@ -42,7 +42,7 @@ export function updateCourseInfo(params) {
 // 删除课程（包括小节&视频
 export function deleteCourseById(id) {
     return request({
-        url: `/edu/courses/${id}`,
+        url: `/cms/admin/courses/${id}`,
         method: 'delete',
         baseURL: 'http://localhost:8800'
     })

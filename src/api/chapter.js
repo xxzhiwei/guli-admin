@@ -3,7 +3,7 @@ import request from '@/utils/request'
 // 获取章节
 export function getChaptersByCourseId(courseId) {
     return request({
-        url: `/edu/chapters/treeNodes/${courseId}`,
+        url: `/cms/admin/chapters/treeNodes/${courseId}`,
         method: 'get',
         baseURL: 'http://localhost:8800'
     })
@@ -12,7 +12,7 @@ export function getChaptersByCourseId(courseId) {
 // 删除章节
 export function deleteChapterById(id) {
     return request({
-        url: `/edu/chapters/${id}`,
+        url: `/cms/admin/chapters/${id}`,
         method: 'delete',
         baseURL: 'http://localhost:8800'
     })
@@ -22,7 +22,7 @@ export function deleteChapterById(id) {
 // 添加章节
 export function addChapter(params) {
     return request({
-        url: '/edu/chapters/',
+        url: '/cms/admin/chapters/',
         method: 'post',
         data: params,
         baseURL: 'http://localhost:8800'
@@ -32,7 +32,7 @@ export function addChapter(params) {
 // 更新章节
 export function updateChapter(params) {
     return request({
-        url: `/edu/chapters/${params.id}`,
+        url: `/cms/admin/chapters/${params.id}`,
         method: 'put',
         data: params,
         baseURL: 'http://localhost:8800'
@@ -42,7 +42,7 @@ export function updateChapter(params) {
 // 更新(章节)小节
 export function updateChapterPart(params) {
     return request({
-        url: `/edu/chapterPart/${params.id}`,
+        url: `/cms/admin/chapterPart/${params.id}`,
         method: 'put',
         data: params,
         baseURL: 'http://localhost:8800'
@@ -53,7 +53,7 @@ export function updateChapterPart(params) {
 // 添加(章节)小节
 export function addChapterPart(params) {
     return request({
-        url: '/edu/chapterPart/',
+        url: '/cms/admin/chapterPart/',
         method: 'post',
         data: params,
         baseURL: 'http://localhost:8800'
@@ -63,7 +63,7 @@ export function addChapterPart(params) {
 // 删除(章节)小节
 export function deleteChapterPartById(id) {
     return request({
-        url: `/edu/chapterPart/${id}`,
+        url: `/cms/admin/chapterPart/${id}`,
         method: 'delete',
         baseURL: 'http://localhost:8800'
     })
