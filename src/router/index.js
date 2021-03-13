@@ -104,7 +104,7 @@ export const constantRoutes = [
                 path: 'index',
                 name: 'Index',
                 component: () => import('@/views/course/index'),
-                meta: { title: '课程管理', icon: 'el-icon-s-help' },
+                meta: { title: '课程管理', icon: 'el-icon-menu' },
             },
             {
                 path: 'save',

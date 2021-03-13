@@ -6,24 +6,11 @@ import request from '@/utils/request'
  */
 export function getTeachers(params) {
     return request({
-        url: '/cms/admin/teachers',
+        url: '/edu/admin/teachers',
         method: 'get',
         params,
-        baseURL: 'http://localhost:8800'
     })
 }
-
-/**
- * 获取全部讲师列表
- * @param {*} params 
- */
-// export function getTeachersAll() {
-//     return request({
-//         url: '/cms/admin/teachers/all',
-//         method: 'get',
-//         baseURL: 'http://localhost:8800'
-//     })
-// }
 
 /**
  * 获取讲师信息
@@ -31,9 +18,8 @@ export function getTeachers(params) {
  */
 export function getTeacherById(id) {
     return request({
-        url: `/cms/admin/teachers/${id}`,
-        method: 'get',
-        baseURL: 'http://localhost:8800'
+        url: `/edu/admin/teachers/${id}`,
+        method: 'get'
     })
 }
 
@@ -43,9 +29,8 @@ export function getTeacherById(id) {
  */
 export function saveTeacher(params) {
     return request({
-        url: `/cms/admin/teachers`,
+        url: `/edu/admin/teachers`,
         method: 'post',
-        baseURL: 'http://localhost:8800',
         data: params
     })
 }
@@ -56,9 +41,8 @@ export function saveTeacher(params) {
  */
 export function updateTeacher(params) {
     return request({
-        url: `/cms/admin/teachers/${params.id}`,
+        url: `/edu/admin/teachers/${params.id}`,
         method: 'put',
-        baseURL: 'http://localhost:8800',
         data: params
     })
 }
@@ -69,8 +53,7 @@ export function updateTeacher(params) {
  */
 export function deleteTeacherById(id) {
     return request({
-        url: `/cms/admin/teachers/${id}`,
-        method: 'delete',
-        baseURL: 'http://localhost:8800'
+        url: `/edu/admin/teachers/${id}`,
+        method: 'delete'
     })
 }

@@ -6,7 +6,7 @@
                 <el-button style="float: right; padding: 3px 0" type="text"
                     @click="() => {
                         $router.push({
-                            path: '/personnel/teacher/index'
+                            path: '/teacher/index'
                         })
                     }"
                 >返回</el-button>
@@ -104,7 +104,7 @@ export default {
         async getById(id) {
             const result = await getTeacherById(id)
             if(result.code === 20000) {
-                this.formData = result.data.item
+                this.formData = result.data.record
             }
         },
         async save() {

@@ -5,8 +5,7 @@ export function uploadVideo(params) {
     return request({
         url: `/vod/videos`,
         method: 'post',
-        data: params,
-        baseURL: 'http://localhost:8800'
+        data: params
     })
 }
 
@@ -15,7 +14,6 @@ export function deleteVideosByIds(params) {
     return request({
         url: `/vod/videos`,
         method: 'delete',
-        data: params,
-        baseURL: 'http://localhost:8800'
+        data: params
     })
 }

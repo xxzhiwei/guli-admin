@@ -8,7 +8,6 @@ export function uploadFile(formData) {
     return request({
         url: '/oss/', // /guli/oss这样不行👋🏻（缺少/）
         method: 'post',
-        data: formData,
-        baseURL: 'http://localhost:8800'
+        data: formData
     })
 }

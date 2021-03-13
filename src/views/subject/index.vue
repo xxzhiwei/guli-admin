@@ -39,12 +39,12 @@
         </el-card>
 
         <el-dialog
-            ref="upload"
             title="导入课程分类"
             :visible.sync="isImportSubject"
             width="30%">
             <el-upload
                 action="#"
+                ref="upload"
                 :http-request="uploadFile"
                 :limit="1"
                 :show-file-list="false"
@@ -91,9 +91,10 @@ export default {
             this.getList();
         },
         async getList() {
+            console.log('1');
             this.listLoading = true;
             const result = await getSubjectTreeNodes();
-            if (result.code === 20000) {
+            if (result.success) {
                 const { records } = result.data;
                 this.list = records;
             }
@@ -130,11 +131,11 @@ export default {
             const formData = new FormData()
             formData.append('file', file)
             const result = await addSubject(formData)
-            if (result.code === 20000) {
-                this.isImportSubject = false
+            if (result.success) {
                 this.$message.success('上传成功')
-                this.$refs.upload.clearFiles()
                 this.getList()
+                this.$refs.upload.clearFiles()
+                this.isImportSubject = false
             }
         }
     },

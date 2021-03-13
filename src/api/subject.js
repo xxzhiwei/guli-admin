@@ -5,9 +5,8 @@ import request from '@/utils/request'
  */
 export function getSubjectTreeNodes() {
     return request({
-        url: '/cms/admin/subjects/treeNodes',
-        method: 'get',
-        baseURL: 'http://localhost:8800'
+        url: '/edu/admin/subjects/treeNodes',
+        method: 'get'
     })
 }
 
@@ -17,9 +16,8 @@ export function getSubjectTreeNodes() {
  */
 export function addSubject(formData) {
     return request({
-        url: '/cms/admin/subjects/xlsx',
+        url: '/edu/admin/subjects/upload/xlsx',
         method: 'post',
-        data: formData,
-        baseURL: 'http://localhost:8800'
+        data: formData
     })
 }
