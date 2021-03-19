@@ -190,7 +190,7 @@ export default {
                 begin: "",
                 end: "",
                 current: 1,
-                size: 10,
+                size: 10
             },
             list: [],
             total: 0,
@@ -218,7 +218,7 @@ export default {
             this.listLoading = true;
             this.listQuery.current = current;
             const result = await getTeachers(this.listQuery);
-            if (result.code === 20000) {
+            if (result.success) {
                 const { records, total } = result.data;
                 this.list = records;
                 this.total = total;
