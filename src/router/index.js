@@ -136,6 +136,19 @@ export const constantRoutes = [
         ]
     },
 
+    {
+        path: '/sta',
+        component: Layout,
+        children: [
+            {
+                path: 'index',
+                name: 'Index',
+                component: () => import('@/views/sta/index'),
+                meta: { title: '统计数据', icon: 'el-icon-picture' },
+            }
+        ]
+    },
+
     // {
     //     path: '/example',
     //     component: Layout,
